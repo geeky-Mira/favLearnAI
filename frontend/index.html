@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  <title>favLearnAI PDF Assistant</title>
+
+  <!-- ✅ PDF.js Core + Worker + Viewer -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css" />
+
+  <!-- ✅ jsPDF for exporting summary notes -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- ✅ PDF-Lib for exporting highlighted PDFs -->
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+  <!-- ✅ Markdown support with syntax highlighting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- ✅ Custom CSS -->
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <div class="header">
+    <h1>favLearnAI PDF Assistant</h1>
+    <div class="controls">
+      <div class="api-key-section">
+        <input type="password" id="api-key-input" placeholder="Enter Gemini API Key" />
+        <button id="save-api-key-btn" class="button">Save Key</button>
+        <span id="api-key-status" class="status-not-set">API Key Not Set</span>
+      </div>
+
+      <!-- ✅ Model Selector -->
+      <div class="model-select-section">
+        <label for="gemini-model">Model:</label>
+        <select id="gemini-model">
+          <option value="gemini-2.0-flash-001">Gemini 2.0 Flash (Fast)</option>
+          <option value="gemini-2.0-pro">Gemini 2.5 Pro (Accurate)</option>
+          <option value="gemini-1.5-flash">Gemini 2.5 Flash</option>
+          <!--option value="gemini-1.5-pro">Gemini 1.5 Pro</option-->
+        </select>
+      </div>
+
+      <label for="pdf-upload" class="file-upload-label">📂 Choose PDF</label>
+      <input type="file" id="pdf-upload" accept=".pdf" class="file-upload-input" />
+      <span id="pdf-file-name">No PDF selected</span>
+      <button id="new-chat-btn" class="button button-green">New Chat</button>
+      <button id="export-notes-btn" class="button button-pink">📝 Export Summary Notes</button>
+      <button id="toggle-sidebar-btn" class="button button-indigo">Toggle AI Sidebar</button>
+      <button id="save-pdf-btn" class="button button-purple">💾 Export Annotated PDF</button>
+    </div>
+  </div>
+
+  <div class="main-content-area">
+    <div id="pdf-viewer-container" class="pdf-viewer-section">
+      <div id="pdf-canvas-container" class="pdf-canvas-container"></div>
+      <div id="selection-popup" class="selection-popup">
+        <button id="highlight-btn">🖍️ Highlight</button>
+        <button id="ask-ai-btn">🤖 Ask AI</button>
+      </div>
+    </div>
+
+    <div id="ai-assistant-sidebar" class="ai-assistant-sidebar hidden">
+      <h2>AI Assistant</h2>
+      <div id="chat-messages" class="chat-messages"></div>
+      <div class="chat-input-area">
+        <input type="text" id="user-input" placeholder="Ask a follow-up question..." />
+        <button id="send-chat-btn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Custom JS Modules -->
+  <script type="module" src="./js/utils.js"></script>
+  <script type="module" src="./js/geminiBridge.js"></script>
+  <script type="module" src="./js/chat.js"></script>
+  <script type="module" src="./js/highlight.js"></script>
+  <script type="module" src="./js/pdfViewer.js"></script>
+
+  <!-- ✅ Init API Key Check -->
+  <script type="module">
+    import { checkAPIKeyStatus } from './js/utils.js';
+    document.addEventListener('DOMContentLoaded', checkAPIKeyStatus);
+  </script>
+</body>
+</html>

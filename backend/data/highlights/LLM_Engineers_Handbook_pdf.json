@@ -1,0 +1,46 @@
+[
+  {
+    "text": "Contributors",
+    "rects": [
+      {
+        "left": 464.15625,
+        "top": 201.390625,
+        "width": 237.133056640625,
+        "height": 47
+      }
+    ],
+    "pageNum": 6,
+    "elements": [
+      {}
+    ]
+  },
+  {
+    "text": "LLM Engineer\u2019s Handbook\nCopyright \u00a9 2024 Packt Publishing",
+    "rects": [
+      {
+        "left": 109.1328125,
+        "top": 100.796875,
+        "width": 286.41754150390625,
+        "height": 26.5
+      },
+      {
+        "left": 1,
+        "top": -0.5,
+        "width": 0,
+        "height": 19
+      },
+      {
+        "left": 109.046875,
+        "top": 150.2421875,
+        "width": 200.19842529296875,
+        "height": 15.5
+      }
+    ],
+    "pageNum": 3,
+    "elements": [
+      {},
+      {},
+      {}
+    ]
+  }
+]
