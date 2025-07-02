@@ -3,11 +3,14 @@ const saveApiKeyBtn = document.getElementById('save-api-key-btn');
 const apiKeyStatusSpan = document.getElementById('api-key-status');
 const modelSelect = document.getElementById('gemini-model');
 
+// Base URL for deployed backend
+const BASE_URL = 'https://favlearnai-backend-fg6q.onrender.com';
+
 // --- Supported Gemini Models ---
 const SUPPORTED_MODELS = [
     "gemini-2.0-flash-001",
-    "gemini-1.5-pro",
-    "gemini-1.5-flash"
+    "gemini-2.5-pro",
+    "gemini-2.5-flash"
 ];
 
 // --- API Key Management ---
@@ -51,7 +54,6 @@ export function checkAPIKeyStatus() {
         }
     }
 
-    // Show the selected model in dropdown
     if (modelSelect) {
         modelSelect.value = getSelectedModel();
     }
@@ -95,7 +97,7 @@ export async function saveHighlightsToBackend(highlights) {
 
     pdfId = sanitizePdfId(pdfId);
     try {
-        await fetch(`http://localhost:8001/save_highlights/${pdfId}`, {
+        await fetch(`${BASE_URL}/save_highlights/${pdfId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ highlights }),
@@ -112,7 +114,7 @@ export async function loadHighlightsFromBackend(pdfId) {
 
     pdfId = sanitizePdfId(pdfId);
     try {
-        const res = await fetch(`http://localhost:8001/load_highlights/${pdfId}`);
+        const res = await fetch(`${BASE_URL}/load_highlights/${pdfId}`);
         if (!res.ok) throw new Error("Failed to fetch highlights.");
         const data = await res.json();
         return data.highlights || [];
@@ -129,7 +131,7 @@ export async function saveChatToBackend(chatHistory) {
 
     pdfId = sanitizePdfId(pdfId);
     try {
-        await fetch(`http://localhost:8001/save_chat/${pdfId}`, {
+        await fetch(`${BASE_URL}/save_chat/${pdfId}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat: chatHistory }),
@@ -146,7 +148,7 @@ export async function loadChatFromBackend(pdfId) {
 
     pdfId = sanitizePdfId(pdfId);
     try {
-        const res = await fetch(`http://localhost:8001/load_chat/${pdfId}`);
+        const res = await fetch(`${BASE_URL}/load_chat/${pdfId}`);
         if (!res.ok) throw new Error("Failed to fetch chat.");
         const data = await res.json();
         return data.chat || [];
