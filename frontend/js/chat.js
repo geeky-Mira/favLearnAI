@@ -11,6 +11,9 @@ const exportNotesBtn = document.getElementById('export-notes-btn');
 
 let chatHistory = [];
 
+//  Deployed backend URL
+const BASE_URL = 'https://favlearnai-backend.onrender.com';
+
 // --- Core Chat Message UI ---
 export function addChatMessage(text, isUser) {
     const messageDiv = document.createElement('div');
@@ -114,7 +117,7 @@ async function exportSummaryNotes() {
         const apiKey = getAPIKey();
         const model = getSelectedModel();
 
-        const res = await fetch("http://localhost:8001/generate_notes", {
+        const res = await fetch(`${BASE_URL}/generate_notes`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
