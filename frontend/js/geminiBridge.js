@@ -1,5 +1,10 @@
 // --- Backend base URL ---
-const BACKEND_URL = 'https://favlearnai-backend-fg6q.onrender.com';
+const isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0'].includes(window.location.hostname);
+
+export const BACKEND_URL = window.BACKEND_URL || (isLocalhost
+    ? 'http://localhost:8001'
+    : 'https://favlearnai-backend-fg6q.onrender.com');
+
 let pdfProcessed = false;
 
 // --- Supported Gemini Models ---

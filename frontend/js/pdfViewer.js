@@ -15,12 +15,17 @@ const pdfUploadInput = document.getElementById('pdf-upload');
 const pdfFileNameSpan = document.getElementById('pdf-file-name');
 const savePdfBtn = document.getElementById('save-pdf-btn');
 
+// NEW: Progress bar
+const progressBar = document.getElementById('pdf-load-progress');
+const ragStatusSpan = document.getElementById('rag-status');
+
 let currentPdfDoc = null;
 let currentHighlights = [];
 let fullPdfTextContent = [];
 let currentPdfId = null;
 let uploadedPdfFile = null;
 
+// --- Render individual page ---
 async function renderPage(pdfDoc, pageNum) {
     const page = await pdfDoc.getPage(pageNum);
     const viewport = page.getViewport({ scale: PDF_RENDER_SCALE });
@@ -59,14 +64,20 @@ async function renderPage(pdfDoc, pageNum) {
     });
 
     applyHighlightsOnLoad(pageWrapper, pageNum);
+
+    console.log(`📝 Rendered page ${pageNum} of ${pdfDoc.numPages}`);
 }
 
+
+// --- Load PDF ---
 async function loadPdf(file) {
     uploadedPdfFile = file;
 
     if (pdfFileNameSpan) {
         pdfFileNameSpan.textContent = file.name;
     }
+
+    console.log(`📂 PDF selected: ${file.name}`);  // immediate log on selection
 
     const reader = new FileReader();
     reader.onload = async () => {
@@ -83,23 +94,26 @@ async function loadPdf(file) {
                 await renderPage(currentPdfDoc, i);
             }
 
-            console.log(`📄 PDF "${file.name}" loaded with ${currentPdfDoc.numPages} pages.`);
-            localStorage.setItem('current_pdf_id', currentPdfId);
+            console.log(`📄 PDF loaded: "${file.name}" with ${currentPdfDoc.numPages} pages.`);
 
-            await processPdfForRAG(fullPdfTextContent.join('\n\n'));
+            // immediately call backend for RAG
+            processPdfForRAG(fullPdfTextContent.join('\n\n'))
+                .then(() => console.log('🧠 RAG processing complete.'))
+                .catch(err => console.error('❌ RAG processing failed:', err));
 
             const loadedHighlights = await loadHighlightsFromBackend(currentPdfId);
             currentHighlights = loadedHighlights;
-            console.log(`🧠 Loaded ${loadedHighlights.length} highlights from backend.`);
+            console.log(`🖍️ Loaded ${loadedHighlights.length} highlights from backend.`);
         } catch (error) {
             console.error('❌ Error loading PDF:', error);
-            alert('Failed to load PDF. Details: ' + error.message);
         }
     };
 
     reader.readAsArrayBuffer(file);
 }
 
+
+// --- Event listeners ---
 pdfUploadInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (file) {

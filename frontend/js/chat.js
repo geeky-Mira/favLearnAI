@@ -12,7 +12,11 @@ const exportNotesBtn = document.getElementById('export-notes-btn');
 let chatHistory = [];
 
 //  Deployed backend URL
-const BASE_URL = 'https://favlearnai-backend-fg6q.onrender.com';
+const BASE_URL = window.BACKEND_URL ||
+    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8001'
+        : 'https://favlearnai-backend-fg6q.onrender.com');
+
 
 // --- Core Chat Message UI ---
 export function addChatMessage(text, isUser) {
