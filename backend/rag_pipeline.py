@@ -41,9 +41,15 @@ def initialize_gemini(api_key: str):
     logger.info("🔐 Gemini API initialized via LangChain.")
 
 # ---------------------------
-# PDF -> Chunks -> Embeddings -> FAISS
+# PDF -> Chunks -> Embeddings -> FAISS (batch-safe)
 # ---------------------------
-async def process_pdf_text_for_rag(full_pdf_text: str, max_chunks: int = 150):
+async def process_pdf_text_for_rag(full_pdf_text: str, max_chunks: int = 100, batch_size: int = 8):
+    """
+    Process a PDF text into FAISS embeddings safely for Docker/Render.
+
+    - max_chunks: limit total chunks to prevent OOM
+    - batch_size: number of chunks embedded at a time
+    """
     global vector_store
     logger.info("🚀 Starting PDF processing...")
 
@@ -67,7 +73,7 @@ async def process_pdf_text_for_rag(full_pdf_text: str, max_chunks: int = 150):
     documents = [Document(page_content=c) for c in chunks]
     texts = [d.page_content for d in documents]
 
-    # Initialize SentenceTransformerEmbeddings on CPU for Docker safety
+    # Initialize embedder on CPU
     hf_token = os.getenv("HF_API_TOKEN") or None
     embedder = SentenceTransformerEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2",
@@ -75,16 +81,25 @@ async def process_pdf_text_for_rag(full_pdf_text: str, max_chunks: int = 150):
         encode_kwargs={"normalize_embeddings": True},
     )
 
-    logger.info("⚙️ Generating embeddings for chunks...")
-    embeddings = embedder.embed_documents(texts)
+    # Batch embedding to reduce memory footprint
+    embeddings = []
+    logger.info(f"⚙️ Generating embeddings in batches of {batch_size}...")
+    for i in range(0, len(texts), batch_size):
+        batch_texts = texts[i:i+batch_size]
+        try:
+            batch_embeds = embedder.embed_documents(batch_texts)
+            embeddings.extend(batch_embeds)
+            logger.info(f"🟢 Embedded batch {i//batch_size + 1} ({len(batch_texts)} chunks)")
+        except Exception:
+            logger.exception(f"⚠️ Embedding failed for batch {i//batch_size + 1}, skipping")
 
+    # Build FAISS vector store
     logger.info("🧠 Building FAISS vector index...")
     vector_store = FAISS.from_embeddings(
         text_embeddings=list(zip(texts, embeddings)),
         embedding=embedder,
     )
-    logger.info("✅ FAISS store ready.")
-    logger.info("🎉 PDF processing complete!")
+    logger.info("✅ FAISS store ready. PDF processing complete!")
 
 # ---------------------------
 # Intent Classifier
