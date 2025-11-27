@@ -7,7 +7,7 @@ const modelSelect = document.getElementById('gemini-model');
 const BASE_URL = window.BACKEND_URL ||
     (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:8001'
-        : 'https://favlearnai-backend-fg6q.onrender.com');
+        : 'https://favlearnai-backend-d.onrender.com');
 
 
 // --- Supported Gemini Models ---
