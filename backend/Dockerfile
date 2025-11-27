@@ -22,4 +22,4 @@ COPY . .
 
 EXPOSE 8001
 
-CMD ["gunicorn", "main:app", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8001", "--workers", "1", "--preload", "--timeout", "180"]
+CMD ["gunicorn", "main:app", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8001", "--workers", "1", "--preload", "--timeout", "600"]
