@@ -3,7 +3,7 @@ const isLocalhost = ['localhost', '127.0.0.1', '0.0.0.0'].includes(window.locati
 
 export const BACKEND_URL = window.BACKEND_URL || (isLocalhost
     ? 'http://localhost:8001'
-    : 'https://favlearnai-backend-fg6q.onrender.com');
+    : 'https://favlearnai-backend-d.onrender.com');
 
 let pdfProcessed = false;
 
