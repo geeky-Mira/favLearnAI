@@ -27,9 +27,10 @@ from rag_pipeline import (
 app = FastAPI()
 
 # --- CORS Middleware ---
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://favlearnai-123.onrender.com")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Use restricted origins in production
+    allow_origins=[FRONTEND_URL, "http://localhost:5500"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
